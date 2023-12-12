@@ -1,0 +1,12 @@
+tiktoken
+pinecone-client
+langchain
+python-dotenv
+pymongo
+pypdf
+streamlit-aggrid
+matplotlib
+statsmodels
+openai
+plantuml
+nltk
