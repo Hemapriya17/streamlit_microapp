@@ -54,7 +54,7 @@ from zipfile import ZipFile
 import io
 from pymongo import MongoClient
 
-client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])  # this is also the default, it can be omitted)
+client = OpenAI(api_key='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')  # this is also the default, it can be omitted)
 
 
 
@@ -352,12 +352,16 @@ def prediction_profiler(editable_df,num_response):
     for res in resp_variables:
         ols_eq = f'{res} ~ {factors_joined}'
         print('ols_eq',ols_eq)
+        print('vbedbe')
         output = ols(ols_eq,data = editable_df).fit()
+        print(output)
         pred_output[res] = output
         df = pd.DataFrame(output.params)
+        print(df)
         values = df.T.values.tolist()[0]
         ols_output[res] = dict(zip(df.T.columns.to_list(),values))
         df_tvalues = pd.DataFrame(output.tvalues)
+        print(df_tvalues)
         t_valueslist = df_tvalues.T.values.tolist()[0]
         t_values[res] = dict(zip(df_tvalues.T.columns.to_list(),t_valueslist))
         
@@ -568,6 +572,7 @@ if __name__ == '__main__':
                     # num_factors = 5
                 print('response_df',st.session_state.response_df)
                 ols_output,pred_output = prediction_profiler(st.session_state.response_df,st.session_state.num_response)
+                print(ols_output,pred_output)
                 for _,pred in pred_output.items():
                     st.write(pred.summary())
                 st.session_state.ols_output = ols_output
