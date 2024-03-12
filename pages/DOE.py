@@ -53,6 +53,7 @@ from itertools import product
 from zipfile import ZipFile
 import io
 from pymongo import MongoClient
+from streamlit import cache
 
 client = OpenAI(api_key='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')  # this is also the default, it can be omitted)
 
@@ -264,7 +265,8 @@ def variable_values(select_name,_col):
 # )
 
 # print(completion.choices[0].message.content)
-def clear_cache():
+async def clear_cache():
+    await cache.expire_cache()
     st.cache_data.clear()
     st.session_state.reasonable_value = ''
     st.session_state.response_df =''
@@ -273,7 +275,8 @@ def clear_cache():
     st.session_state.analyseDoe = ''
     st.session_state.click = False
 
-def response_clear_cache():
+async def response_clear_cache():
+    await cache.expire_cache()
     prediction_profiler.clear()
     st.session_state.response_df =''
     st.session_state.reasonable_value = ''
