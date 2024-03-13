@@ -265,8 +265,7 @@ def variable_values(select_name,_col):
 # )
 
 # print(completion.choices[0].message.content)
-async def clear_cache():
-    await cache.expire_cache()
+def clear_cache():
     st.cache_data.clear()
     st.session_state.reasonable_value = ''
     st.session_state.response_df =''
@@ -275,8 +274,7 @@ async def clear_cache():
     st.session_state.analyseDoe = ''
     st.session_state.click = False
 
-async def response_clear_cache():
-    await cache.expire_cache()
+def response_clear_cache():
     prediction_profiler.clear()
     st.session_state.response_df =''
     st.session_state.reasonable_value = ''
