@@ -99,7 +99,7 @@ def variable_values():
             # st.write(st.session_state.dict_values_re)
 
             doe_type = st.selectbox('DOE type?',('fractional factorial design', 'full factorial design', 'RMS design'),key = 'doe_type') #st.text_input('DOE TYPE',key = 'doe_type',value = st.session_state.get('doe_type',''))
-            num_factors = st.text_input('NUMBER OF FACTORS',key = 'num_factors',value ='')
+            num_factors = st.text_input('NUMBER OF FACTORS',key = 'num_factors',value ='4')
             mongo_data['num_factors'] = num_factors
             # time.sleep(30)
             factors_dict = {}
@@ -475,7 +475,7 @@ def label_group_bar_table(ax, df):
 if __name__ == '__main__':
     # st.button(label='Assume reasonable value for the response variables',on_click=add_slider)
     # add_slider()
-    # try:
+    try:
         # db_client = MongoClient('mongodb+srv://m220student:Gokulnath@cluster0.qp8h2nr.mongodb.net/')
         # load_dotenv()
         # db_name = "electronics"
@@ -826,9 +826,9 @@ if __name__ == '__main__':
                 st.pyplot(fig)
         # st.sidebar.button("Refresh",on_click=clear_cache)
         # st.sidebar.button("Refresh doe table response variable",on_click=response_clear_cache)
-    # except Exception as e:
-    #     print(e)
-    #     pass
+    except Exception as e:
+        print(e)
+        pass
 
 
     # editable_df = st.data_editor(dict_response)
