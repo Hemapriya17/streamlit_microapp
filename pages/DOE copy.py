@@ -107,10 +107,10 @@ def variable_values():
                 for i in range(1,int(num_factors)+1):
                     col1, col2 = st.columns([1,1])
                     with col1:
-                        st.text_input(f"Factor # {i} (low,high)", key=f'factor{i}',value = '')
+                        st.text_input(f"Factor # {i} (low,high)", key=f'factor{i}',value = st.session_state.get(f'factor{i}',''))
                         mongo_data[f'factor{i}'] = st.session_state.get(f'factor{i}','')
                     with col2:
-                        st.text_input(f"values # {i}", key=f'values{i}',value = '')
+                        st.text_input(f"values # {i}", key=f'values{i}',value = st.session_state.get(f'values{i}',''))
                         mongo_data[f'values{i}'] = st.session_state.get(f'values{i}','')
                 factor_level = st.text_input('FACTOR LEVEL',key = 'factor_level',value ='')
                 mongo_data['factor_level'] = st.session_state.get('factor_level','')
