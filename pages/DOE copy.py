@@ -508,7 +508,7 @@ if __name__ == '__main__':
             with col1:
                 reasonable_button = st.form_submit_button(label='Stimulate values for response variables')
             with col2:
-                st.form_submit_button("Clear DOE response values",on_click=response_clear_cache,args=(reasonable_button,))
+                st.form_submit_button("Clear DOE response values",on_click=response_clear_cache)
 
             if reasonable_button:
                 #   print('besnhsen')
