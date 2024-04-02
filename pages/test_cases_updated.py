@@ -271,7 +271,7 @@ def extract_text(test,texts,chain):
 
 if __name__ == '__main__':
     # test,texts,chain = loading_pdf()
-    try:
+    # try:
         if 'response'not in st.session_state:
 
             st.session_state.response = ''
@@ -302,6 +302,7 @@ if __name__ == '__main__':
             options.configure_side_bar()
 
             options.configure_selection("single")
+            print('gggggggggggggggggggggggg')
             selection = AgGrid(
                 test_df,
                 enable_enterprise_modules=True,
@@ -317,6 +318,7 @@ if __name__ == '__main__':
             # test_name = re.sub(r'^(-\s+)','',test)
             # print(test_name)
             if selection.selected_rows:
+                print('hhhhhhhhhhhhhhhhhh')
                 test_name = f'{selection.selected_rows[0].get("text")}'
                 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', 'YourAPIKey')
                 llm = ChatOpenAI(model_name="gpt-4-1106-preview", temperature=0, openai_api_key=OPENAI_API_KEY)
@@ -332,8 +334,8 @@ if __name__ == '__main__':
                 test_plan = chain.run(input_documents=st.session_state['selected_case'], question=test_plan_query)
                 print(test_plan) 
                 st.write(test_plan)
-    except Exception as e:
-        pass
+    # except Exception as e:
+    #     pass
     # extract_text(test,texts,chain)
     # st.write(response)
     # with st.expander('Document Similarity Search'):
