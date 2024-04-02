@@ -29,7 +29,9 @@ from st_aggrid import AgGrid, GridOptionsBuilder
 from st_aggrid.shared import GridUpdateMode
 import ast
 import requests
-
+import base64
+import fitz
+from PIL import Image
 
 load_dotenv()
 
@@ -42,7 +44,29 @@ def extract_content(blocks):
     contents = []
     for block in blocks:
         if block["type"] == "Text" or block["type"] == "Table":
-            contents.append(block["content"])
+            content = block["content"]
+        if block['type'] == "Figure":
+            bbox = block["bbox"]
+            
+            pdf_document = fitz.open('test.pdf')
+            page_number = int(bbox['page']) - 1  # Pages are zero-indexed
+            page = pdf_document[page_number]
+
+            # Scale the rectangle coordinates
+            left = bbox['left'] * page.rect.width
+            top = bbox['top'] * page.rect.height
+            right = (bbox['left'] + bbox['width']) * page.rect.width
+            bottom = (bbox['top'] + bbox['height']) * page.rect.height
+
+            rect = fitz.Rect(left, top, right, bottom)
+
+            # Extract the image from the bounding box
+            img = page.get_pixmap(clip=rect)
+            img.save('test_image.png')
+            with open('test_image.png', "rb") as img_file:
+                content = base64.b64encode(img_file.read())
+            # content = base64.b64encode(my_string)
+        contents.append(str(content))
     return contents
 @st.cache_resource
 def loading_pdf(title):
@@ -104,7 +128,11 @@ def loading_pdf(title):
     response = requests.post(url, json=payload, headers=headers)
     print(response)
 # Parse the JSON response
-    data = response .json()
+    url = 'https://utfs.io/f/ba33cfca-a907-4d7c-882d-20cf068cfcb6-98msm9.pdf'
+    page_response = requests.get(url, stream=True)
+    with open('test.pdf', 'wb') as f:
+        f.write(page_response.content)
+    data = response.json()
     print(data)
     for chunk in data["result"]["chunks"]:
         contents = extract_content(chunk["blocks"])
@@ -122,7 +150,7 @@ def loading_pdf(title):
         print(OPENAI_API_KEY)
         llm = ChatOpenAI(model_name="gpt-4-1106-preview", temperature=0, openai_api_key=OPENAI_API_KEY)
         chain = load_qa_chain(llm, chain_type="stuff")
-        prompt = "Extract all the test cases (only Title)with the clause number from the above text. Return the response as dictionary with its respection clauses. Don't return any unwanted texts. Final answer should be in the following format: '''json {'text':[headings],'clause':[respective clauses]}'''. Ensure that all strings are enclosed in double quotes. Don't return any unwanted quotes like ``` json"
+        prompt = "Extract all the test cases (only Title) with the clause number from the above text. Return the response as dictionary with its respection clauses. Don't return any unwanted texts. Final answer should be in the following format: '''json {'text':[headings],'clause':[respective clauses]}'''. Ensure that all strings are enclosed in double quotes. Don't return any unwanted quotes like ``` json"
         print('vebwbewbewb')
         response = chain.run(input_documents=docs, question=prompt,verbose=True)
         print(response)
@@ -236,14 +264,14 @@ def extract_text(test,texts,chain):
     # print('texts',texts)
     # print(chain)
     test_name = re.sub(r'^(-\s+)','',test)
-    query = f'Extract text which is present below the heading "{test_name}"'
+    query = f'Extract text which is present below the heading "{test_name}" and if any encoded string is present then convert the encoded steing to image and display'
     response = chain.run(input_documents=texts, question=query)
     st.write(response)
 
 
 if __name__ == '__main__':
     # test,texts,chain = loading_pdf()
-    # try:
+    try:
         if 'response'not in st.session_state:
 
             st.session_state.response = ''
@@ -302,10 +330,10 @@ if __name__ == '__main__':
                 st.session_state['selected_case'] = selected_case
                 test_plan_query = f'{response} Using the response/text before suggest the following Objective, Apparatus Required, Manufacturers Data Required, Formula, precautions, Pre Test Condition, During Test Condition, Post Test Condition, Measured Value, Success Criteria, Procedure, Circuit Diagram if any, Tabulation and Result order wise.'
                 test_plan = chain.run(input_documents=st.session_state['selected_case'], question=test_plan_query)
-                print(test_plan)
+                print(test_plan) 
                 st.write(test_plan)
-    # except Exception as e:
-    #     pass
+    except Exception as e:
+        pass
     # extract_text(test,texts,chain)
     # st.write(response)
     # with st.expander('Document Similarity Search'):
