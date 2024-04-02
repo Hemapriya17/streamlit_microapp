@@ -334,6 +334,8 @@ if __name__ == '__main__':
                 test_plan = chain.run(input_documents=st.session_state['selected_case'], question=test_plan_query)
                 print(test_plan) 
                 st.write(test_plan)
+            else:
+                st.stop()
     # except Exception as e:
     #     pass
     # extract_text(test,texts,chain)
