@@ -10,3 +10,4 @@ statsmodels
 openai
 plantuml
 nltk
+PyMuPDF
