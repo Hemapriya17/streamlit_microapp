@@ -413,7 +413,7 @@ def generate_fmea():
         fmea_name = st.session_state.image_response_cache.get(base64_image)
         fmea_name = ast.literal_eval(str(fmea_name))
         st.session_state.fmea_name = fmea_name[0]
-        st.write(fmea_name)
+        # st.write(fmea_name)
     default = st.session_state.get('fmea_name','')
     if isinstance(default,tuple):
         default = default[0]
