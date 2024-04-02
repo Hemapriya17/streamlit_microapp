@@ -318,7 +318,7 @@ if __name__ == '__main__':
             # test_name = re.sub(r'^(-\s+)','',test)
             # print(test_name)
             # if selection is not None:
-           if selection is not None and hasattr(selection, 'selected_rows') and selection.selected_rows:
+            if selection is not None and hasattr(selection, 'selected_rows') and selection.selected_rows:
                 print('hhhhhhhhhhhhhhhhhh')
                 test_name = f'{selection.selected_rows[0].get("text")}'
                 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', 'YourAPIKey')
@@ -328,13 +328,13 @@ if __name__ == '__main__':
                 response = chain.run(input_documents=st.session_state['docs'], question=query)
                 st.write(response)
                 text_splitter = RecursiveCharacterTextSplitter(chunk_size=200000, chunk_overlap=0)
-# # doc =  Document(page_content="text", metadata={"source": "local"})
+                # # doc =  Document(page_content="text", metadata={"source": "local"})
                 selected_case = [Document(page_content=x) for x in text_splitter.split_text(response)]
                 st.session_state['selected_case'] = selected_case
                 test_plan_query = f'{response} Using the response/text before suggest the following Objective, Apparatus Required, Manufacturers Data Required, Formula, precautions, Pre Test Condition, During Test Condition, Post Test Condition, Measured Value, Success Criteria, Procedure, Circuit Diagram if any, Tabulation and Result order wise.'
                 test_plan = chain.run(input_documents=st.session_state['selected_case'], question=test_plan_query)
                 print(test_plan) 
-                st.write(test_plan)
+st.write(test_plan)
             # else:
             #     st.stop()
     # except Exception as e:
