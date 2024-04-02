@@ -334,7 +334,7 @@ if __name__ == '__main__':
                 test_plan_query = f'{response} Using the response/text before suggest the following Objective, Apparatus Required, Manufacturers Data Required, Formula, precautions, Pre Test Condition, During Test Condition, Post Test Condition, Measured Value, Success Criteria, Procedure, Circuit Diagram if any, Tabulation and Result order wise.'
                 test_plan = chain.run(input_documents=st.session_state['selected_case'], question=test_plan_query)
                 print(test_plan) 
-st.write(test_plan)
+                st.write(test_plan)
             # else:
             #     st.stop()
     # except Exception as e:
