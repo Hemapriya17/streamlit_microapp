@@ -318,23 +318,25 @@ if __name__ == '__main__':
             # test_name = re.sub(r'^(-\s+)','',test)
             # print(test_name)
             # if selection is not None:
-            if selection is not None and hasattr(selection, 'selected_rows') and selection.selected_rows:
-                print('hhhhhhhhhhhhhhhhhh')
-                test_name = f'{selection.selected_rows[0].get("text")}'
-                OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', 'YourAPIKey')
-                llm = ChatOpenAI(model_name="gpt-4-1106-preview", temperature=0, openai_api_key=OPENAI_API_KEY)
-                chain = load_qa_chain(llm, chain_type="stuff")
-                query = f'you are a system who extract text under the {test_name} clause. If the extracted text has referrence to other clause you have to extract those clause text and if the last extracted text contains someother reference clause then you have extract those clause text also. This must go until all the clause text is extracted from the last extracted text. consider it as reference clause when it has keywords like "see","refer" etc. For some headings text will be available from the contents page but don"t include those text available in the content page. If you can"t extract the answer or if you don"t the answer, just say we don"t have answer for this  {test_name}, don"t try to make up an answer'
-                response = chain.run(input_documents=st.session_state['docs'], question=query)
-                st.write(response)
-                text_splitter = RecursiveCharacterTextSplitter(chunk_size=200000, chunk_overlap=0)
-                # # doc =  Document(page_content="text", metadata={"source": "local"})
-                selected_case = [Document(page_content=x) for x in text_splitter.split_text(response)]
-                st.session_state['selected_case'] = selected_case
-                test_plan_query = f'{response} Using the response/text before suggest the following Objective, Apparatus Required, Manufacturers Data Required, Formula, precautions, Pre Test Condition, During Test Condition, Post Test Condition, Measured Value, Success Criteria, Procedure, Circuit Diagram if any, Tabulation and Result order wise.'
-                test_plan = chain.run(input_documents=st.session_state['selected_case'], question=test_plan_query)
-                print(test_plan) 
-                st.write(test_plan)
+            if selection is not None:
+                if hasattr(selection, 'selected_rows'):
+                    if selection.selected_rows:
+                        print('hhhhhhhhhhhhhhhhhh')
+                        test_name = f'{selection.selected_rows[0].get("text")}'
+                        OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', 'YourAPIKey')
+                        llm = ChatOpenAI(model_name="gpt-4-1106-preview", temperature=0, openai_api_key=OPENAI_API_KEY)
+                        chain = load_qa_chain(llm, chain_type="stuff")
+                        query = f'you are a system who extract text under the {test_name} clause. If the extracted text has referrence to other clause you have to extract those clause text and if the last extracted text contains someother reference clause then you have extract those clause text also. This must go until all the clause text is extracted from the last extracted text. consider it as reference clause when it has keywords like "see","refer" etc. For some headings text will be available from the contents page but don"t include those text available in the content page. If you can"t extract the answer or if you don"t the answer, just say we don"t have answer for this  {test_name}, don"t try to make up an answer'
+                        response = chain.run(input_documents=st.session_state['docs'], question=query)
+                        st.write(response)
+                        text_splitter = RecursiveCharacterTextSplitter(chunk_size=200000, chunk_overlap=0)
+                        # # doc =  Document(page_content="text", metadata={"source": "local"})
+                        selected_case = [Document(page_content=x) for x in text_splitter.split_text(response)]
+                        st.session_state['selected_case'] = selected_case
+                        test_plan_query = f'{response} Using the response/text before suggest the following Objective, Apparatus Required, Manufacturers Data Required, Formula, precautions, Pre Test Condition, During Test Condition, Post Test Condition, Measured Value, Success Criteria, Procedure, Circuit Diagram if any, Tabulation and Result order wise.'
+                        test_plan = chain.run(input_documents=st.session_state['selected_case'], question=test_plan_query)
+                        print(test_plan) 
+                        st.write(test_plan)
             # else:
             #     st.stop()
     # except Exception as e:
