@@ -421,7 +421,7 @@ def extract_content(blocks):
 
             # Extract the image from the bounding box
             img = page.get_pixmap(clip=rect)
-            # img.save('test_image.png')
+            img.save('test_image.png')
             with open('test_image.png', "rb") as img_file:
                 content = base64.b64encode(img_file.read())
                 image_content = content
