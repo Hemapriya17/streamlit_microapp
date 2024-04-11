@@ -395,10 +395,10 @@ def extract_content(blocks):
         if block["type"] == "Text" and figure:
             fig_found = re.findall(r'\b^FIG\b|\b^fig\b',block["content"])
             # print()
-            st.write(fig_found)
+            # st.write(fig_found)
             if fig_found:
                 con = block["content"]
-                st.write(con)
+                # st.write(con)
                 with open(f"{con}", "w") as output:
                     output.write(str(image_content.decode('utf8')))
                 figure = False
