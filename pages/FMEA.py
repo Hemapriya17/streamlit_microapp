@@ -436,14 +436,22 @@ def generate_fmea():
         # st.write(prompt)
         messages = [{"role": "user", "content": prompt}]
         start_time = time.time()
-        completion = client.chat.completions.create(model="gpt-4-1106-preview",messages=messages,temperature=0)
+        # completion = client.chat.completions.create(model="gpt-4-1106-preview",messages=messages,temperature=0)
+        headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {os.environ['OPENAI_API_KEY']}"
+    }
+
+        completion = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json={"model": "gpt-4-1106-preview", "messages": messages, "temperature": 0})
         end_time = time.time()
 
         time_lapsed = end_time - start_time
 
         st.write(f'{round(time_lapsed, 2)} secs')
         
-        response = completion.choices[0].message.content
+        # response = completion.choices[0].message.content
+        completion = completion.json()
+        response = completion.get('choices', [])[0].get('message', {}).get('content')
         
         st.session_state.response = response
         st.session_state.result = 'done'
