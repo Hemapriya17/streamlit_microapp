@@ -14,7 +14,7 @@ from PIL import Image
 import streamlit.components.v1 as components
 
 # Initialize the OpenAI client with your API key
-openai.api_key = "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"
+openai.api_key = "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"
 
 # Load environment variables from .env file
 # load_dotenv()
