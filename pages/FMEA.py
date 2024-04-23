@@ -339,7 +339,7 @@ import requests
 load_dotenv()
 
 # Set OpenAI API key
-os.environ['OPENAI_API_KEY'] = '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'
+os.environ['OPENAI_API_KEY'] = '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'
 
 # Initialize OpenAI client
 client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
