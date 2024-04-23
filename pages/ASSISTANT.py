@@ -20,7 +20,7 @@ openai.api_key = "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"
 # load_dotenv()
 
 # client = openai.OpenAI()
-client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])  # this is also the default, it can be omitted)
+client = OpenAI(api_key='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')  # this is also the default, it can be omitted)
 
 model = "gpt-4-1106-preview"  # "gpt-3.5-turbo-16k"
 
