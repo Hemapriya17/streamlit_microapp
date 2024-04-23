@@ -716,7 +716,7 @@ def loading_pdf(title):
             # prompt = "Extract all the headers which is present at the start of new line and present only after a integer. Don't consider the text as heading if the integer which is present before the heading is not continuous and don't include its sub-headings. Return the response as list and don't return any unwanted texts or integers."
             prompt = "Extract all the titles/headings and its title number and also its sub-headings. Don't include Scope,purpose definitions and other related titles. Return the response as list and don't return any unwanted texts or integers."
             response = chain.run(input_documents=similar_docs, question=prompt)
-            st.write(response)
+            # st.write(response)
             # print(response)
             # print(type(response))
             # response1 = list(response)
@@ -845,7 +845,7 @@ if __name__ == '__main__':
                 response = chain.run(input_documents=st.session_state['docs'], question=query)
                 # st.write(response)
                 # response = 'FIG. 104'
-                st.write(response.rsplit(',',1)[-1])
+                # st.write(response.rsplit(',',1)[-1])
                 img_response=response.rsplit(',',1)[-1]
                 img_response = img_response.replace("'",'')
                 img_response = img_response.replace('"','').strip()
@@ -858,7 +858,7 @@ if __name__ == '__main__':
                     # paren = False
                 # img_response = img_response[0:len(img_response)-1]
                 # print(img_response,img_response)
-                st.write(img_response)
+                # st.write(img_response)
                 # response = ast.literal_eval(response)
                 for file in os.listdir():
                     # print('file',file)
