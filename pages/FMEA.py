@@ -378,7 +378,7 @@ def generate_fmea():
         else:
             headers = {
                 "Content-Type": "application/json",
-                "Authorization": f"Bearer {os.environ['OPENAI_API_KEY']}"
+                "Authorization": f"Bearer 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"
             }
 
             payload = {
