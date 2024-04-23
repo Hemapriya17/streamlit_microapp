@@ -528,7 +528,7 @@ def loading_pdf(title):
             print(OPENAI_API_KEY)
             llm = ChatOpenAI(model_name="gpt-4-1106-preview", temperature=0, openai_api_key=OPENAI_API_KEY)
             chain = load_qa_chain(llm, chain_type="stuff")
-            prompt = "Extract all the test cases (only Title) with the clause number from the above text. Return the response as dictionary with its respection clauses. Don't return any unwanted texts. Final answer should be in the following format: '''json {'text':[headings],'clause':[respective clauses]}'''. Ensure that all strings are enclosed in double quotes. Don't return any unwanted quotes like ``` json"
+            prompt = "Extract all the test cases (only Title) with the clause number from the above text. Return the response as dictionary with its respection clauses. Don't return any unwanted texts and headings like scope, general. Final answer should be in the following format: '''json {'text':[headings],'clause':[respective clauses]}'''. Ensure that all strings are enclosed in double quotes. Don't return any unwanted quotes like ``` json"
             print('vebwbewbewb')
             response = chain.run(input_documents=docs, question=prompt,verbose=True)
             print(response)
