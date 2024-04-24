@@ -881,6 +881,7 @@ if __name__ == '__main__':
                 # # doc =  Document(page_content="text", metadata={"source": "local"})
                 selected_case = [Document(page_content=x) for x in text_splitter.split_text(response)]
                 st.session_state['selected_case'] = selected_case
+                st.write(response)
                 test_plan_query = f'{response} Using the response/text before suggest the following Objective, Apparatus Required, Manufacturers Data Required, Formula, precautions, Pre Test Condition, During Test Condition, Post Test Condition, Measured Value, Success Criteria, Procedure, Circuit Diagram if any, Tabulation and Result order wise. If any base64 string are found then convert it to image and display under the heading "diagram". If enough contexts/text is not available then simply return "Not enough content provided" don"t give any assumption response.'
                 test_plan = chain.run(input_documents=st.session_state['selected_case'], question=test_plan_query)
                 print(test_plan) 
