@@ -479,7 +479,7 @@ def loading_pdf(title):
         f.write(page_response.content)
     loader = PyPDFLoader('input_pdf.pdf')
     data = loader.load()
-    if len(data) < 90:
+    if len(data) < 30:
 
         # data = loader.load()
         url = "https://v1.api.reducto.ai/parse"
