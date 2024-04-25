@@ -479,7 +479,7 @@ def loading_pdf(title):
         f.write(page_response.content)
     loader = PyPDFLoader('input_pdf.pdf')
     data = loader.load()
-    if len(data) < 30:
+    if len(data) < 90:
 
         # data = loader.load()
         url = "https://v1.api.reducto.ai/parse"
@@ -539,7 +539,7 @@ def loading_pdf(title):
                 response = response.split('\n',1)[1]
                 print('dict_response',response)
                 response = response.rsplit('\n',1)[0]
-            
+                print(response,response)
             dict_response = ast.literal_eval(response)
             # st.write(f"Source : {results[0][0].metadata.get('source')}")
             # st.session_state.source = results[0][0].metadata.get('source')
@@ -716,7 +716,7 @@ def loading_pdf(title):
             # prompt = "Extract all the headers which is present at the start of new line and present only after a integer. Don't consider the text as heading if the integer which is present before the heading is not continuous and don't include its sub-headings. Return the response as list and don't return any unwanted texts or integers."
             prompt = "Extract all the titles/headings and its title number and also its sub-headings. Don't include Scope,purpose definitions and other related titles. Return the response as list and don't return any unwanted texts or integers."
             response = chain.run(input_documents=similar_docs, question=prompt)
-            # st.write(response)
+            st.write(response)
             # print(response)
             # print(type(response))
             # response1 = list(response)
@@ -807,6 +807,31 @@ if __name__ == '__main__':
                 allow_unsafe_jscode=True,
             )
             headings = test_df['text'].to_list()
+            # OPENAI_API_KEY = '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'
+            # llm = ChatOpenAI(model_name="gpt-4-1106-preview", temperature=0, openai_api_key=OPENAI_API_KEY)
+            # chain = load_qa_chain(llm, chain_type="stuff")
+            # query = f"extract all the clauses which are referred in the text present under the heading LEAKAGE CURRENT AND ELECTRIC STRENGTH AT OPERATING TEMPERATURE. don't return heading/clause of same clause. Return the clause names and numbers as a string separated by comma and don't return any unwanted text."
+
+            # response = chain.run(input_documents=st.session_state['docs'], question=query)
+            # st.write('before while',response)
+            # print(response)
+            # response = response.split(',')
+            # extracted_heading = []
+            # while response:
+            #     head = response.pop(0).strip()
+            #     extracted_heading.append(head)
+            #     query = f"extract all the clauses which are referred in the text present under the headings/clauses {head} don't return heading/cluase of same clause and don't include its subclauses limit with two decimal. Return the clause names and numbers as a string separated by comma and don't return any unwanted text."
+
+            #     response1 = chain.run(input_documents=st.session_state['docs'], question=query)
+            #     st.write(response1)
+            #     print(response1)
+            #     response1 = response1.split(',')
+                # response.append(response1)
+                # for res in response1:
+                #     if res not in extracted_heading:
+                #         response.append(res)
+                # print('while loop response',response)
+            # headings = ['Leakage current and electric strength at operating temperature']
             for heading in headings:
                 # options = GridOptionsBuilder.from_dataframe(
                 #     test_df, enableRowGroup=True, enableValue=True, enablePivot=True
@@ -841,48 +866,67 @@ if __name__ == '__main__':
                 chain = load_qa_chain(llm, chain_type="stuff")
                 st.write(test_name)
                 # query = f'you are a system who extract text under the {test_name.upper()} heading including its sub classes. If the extracted text has referrence to other clause you need to extract those heading/clause text and if the last extracted text contains someother reference clause then you have extract those clause text also. This must go until all the clause text is extracted from the last extracted text. consider it as reference clause when it has keywords like "see","refer" etc. For some headings text will be available from the contents page but don"t include those text available in the content page. If you can"t extract the answer or if you don"t the answer, just say we don"t have answer for this  {test_name}, don"t try to make up an answer. Return value should be in tuple where first value should be the text and the second value in the tuple should be the figure number if any figure number is mentioned in the extracted text/ present under the heading.'
-                query = f'Extract text under the {test_name.upper()} heading including its sub classes and tables if any. If the extracted text has referrence to other clause you need to extract those heading/clause text .This must go until all the clause text is extracted from the last extracted text. consider it as reference clause when it has keywords like "see","refer" etc. If any table is refered extract those also.Response should be in tuple where first value should be the text and the second value in the tuple should be the figure name if any figure name is mentioned in the extracted text/ present under the heading. only return the tuple and don"t include unwanted text'
+                query = f'Extract text under the {test_name.upper()} heading including its sub classes and tables if any. Then extract the reference/other clauses mentioned in the {test_name.upper()} heading. After extracting the reference clauses extract text present under those reference clause and combine both extracted text.This must go until all the clause text is extracted from the last extracted text (like recursive method). If any table is refered extract those also. Response should be in dictionary with key names are "text" and "images" where the value for images key should be the diagram name if any diagram is mentioned in the extracted or reference heading or present under the heading. only return the conbined text ,images dictionary and don"t include unwanted text like "Here is the extracted information based on your request:"'
                 response = chain.run(input_documents=st.session_state['docs'], question=query)
                 # st.write(response)
+                print(response)
+                json_text = response.split('\n',1)[0]
+                if "json" in json_text or "'''" in json_text:
                 # response = 'FIG. 104'
-                # st.write(response.rsplit(',',1)[-1])
-                img_response=response.rsplit(',',1)[-1]
-                img_response = img_response.replace("'",'')
-                img_response = img_response.replace('"','').strip()
-                paren = True
-                while paren:
-                    img_response_1 = img_response
-                    img_response = re.sub(r'\)','',img_response)
-                    if img_response == img_response_1:
-                        paren = False
+                    # st.write(response.split('\n',1)[-1])
+                    response=response.split('\n',1)[-1]
+                    response=response.rsplit('\n',1)[0]
+                    st.write(response)
+                    response = ast.literal_eval(response)
+                    imgs = response.get('images')
+                    text_response = response.get('text')
+                # img_response = img_response.replace("'",'')
+                # img_response = img_response.replace('"','').strip()
+                # paren = True
+                # while paren:
+                #     img_response_1 = img_response
+                #     img_response = re.sub(r'\)','',img_response)
+                #     if img_response == img_response_1:
+                #         paren = False
                     # paren = False
                 # img_response = img_response[0:len(img_response)-1]
                 # print(img_response,img_response)
+                # query = f"extract all the reference clauses which is mentioned in the heading LEAKAGE CURRENT AND ELECTRIC STRENGTH AT OPERATING TEMPERATURE. Return the clause names and numbers in a list and don't return any unwanted text."
+
+                # response = chain.run(input_documents=st.session_state['docs'], question=query)
+                # st.write(response)
                 # st.write(img_response)
                 # response = ast.literal_eval(response)
-                for file in os.listdir():
-                    # print('file',file)
-                    # st.write(file)
-                    # st.write(response.rsplit(',')[1])
-                    if img_response:
-                        # st.write(img_response)
-                        print('img_response',img_response)
-                        file_found = re.findall(r'{}'.format(str(img_response)),file,re.IGNORECASE)
-                        print('file_found',file_found)
-                        # st.write(file_found)
-                        if file_found:
-                            # print('brebrbn')
-                            # f = open(f"{file}", "r")
-                            # image_base64 = f.read()
-                            # st.write(f.read())
-                            main(file)
-                    
+                else:
+                    response = ast.literal_eval(response)
+                    imgs = response.get('images')
+                    text_response = response.get('text')
+                    st.write(response)
+                if imgs:
+                    for file in os.listdir():
+                        # print('file',file)
+                        # st.write(file)
+                        # st.write(response.rsplit(',')[1])
+                        for img_response in imgs:
+                        # if img_response:
+                            # st.write(img_response)
+                            print('img_response',img_response)
+                            file_found = re.findall(r'{}'.format(str(img_response)),file,re.IGNORECASE)
+                            print('file_found',file_found)
+                            # st.write(file_found)
+                            if file_found:
+                                # print('brebrbn')
+                                # f = open(f"{file}", "r")
+                                # image_base64 = f.read()
+                                # st.write(f.read())
+                                main(file)
+                                break
+                        
                 text_splitter = RecursiveCharacterTextSplitter(chunk_size=200000, chunk_overlap=0)
                 # # doc =  Document(page_content="text", metadata={"source": "local"})
-                selected_case = [Document(page_content=x) for x in text_splitter.split_text(response)]
+                selected_case = [Document(page_content=x) for x in text_splitter.split_text(response.get('text',''))]
                 st.session_state['selected_case'] = selected_case
-                st.write(response)
-                test_plan_query = f'{response} Using the response/text before suggest the following Objective, Apparatus Required, Manufacturers Data Required, Formula, precautions, Pre Test Condition, During Test Condition, Post Test Condition, Measured Value, Success Criteria, Procedure, Circuit Diagram if any, Tabulation and Result order wise. If any base64 string are found then convert it to image and display under the heading "diagram". If particular detail is not available then simply return "Not enough content provided" for that particular topic/heading and don"t give any assumption response.'
+                test_plan_query = f'{text_response} Using the response/text before suggest the following Objective, Apparatus Required, Manufacturers Data Required, Formula, precautions, Pre Test Condition, During Test Condition, Post Test Condition, Measured Value, Success Criteria, Procedure, Circuit Diagram if any, Tabulation and Result order wise. If any base64 string are found then convert it to image and display under the heading "diagram". If particular detail is not available then simply return "Not enough content provided" for that particular topic/heading and don"t give any assumption response.'
                 test_plan = chain.run(input_documents=st.session_state['selected_case'], question=test_plan_query)
                 print(test_plan) 
                 st.write(test_plan)
