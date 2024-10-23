@@ -3,11 +3,11 @@ pinecone-client==2.2.0
 langchain==0.0.200
 python-dotenv==0.21.0
 pymongo==4.3.3
-pypdf==5.0.1
+pypdf
 streamlit-aggrid==0.2.3
 matplotlib==3.7.1
 statsmodels==0.14.0
 openai==0.27.0
-plantuml==1.0.0
+plantuml
 nltk==3.7
 PyMuPDF==1.19.6
