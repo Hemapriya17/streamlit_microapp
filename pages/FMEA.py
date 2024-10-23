@@ -339,7 +339,7 @@ import requests
 load_dotenv()
 
 # Set OpenAI API key
-os.environ['OPENAI_API_KEY'] = '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'
+openai_api_key = os.getenv("OPENAI_API_KEY")
 
 # Initialize OpenAI client
 client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
@@ -378,7 +378,7 @@ def generate_fmea():
         else:
             headers = {
                 "Content-Type": "application/json",
-                "Authorization": f"Bearer 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"
+                "Authorization": f"Bearer {openai_api_key}"  # Use the API key from the environment
             }
 
             payload = {
@@ -441,7 +441,6 @@ def generate_fmea():
         "Content-Type": "application/json",
         "Authorization": f"Bearer {os.environ['OPENAI_API_KEY']}"
     }
-
         completion = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json={"model": "gpt-4-1106-preview", "messages": messages, "temperature": 0})
         end_time = time.time()
 
@@ -467,3 +466,4 @@ if __name__ == '__main__':
         generate_fmea()
     except Exception as e:
         st.stop()
+

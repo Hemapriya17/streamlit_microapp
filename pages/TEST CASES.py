@@ -63,8 +63,9 @@ def loading_pdf(title):
             text_splitter = RecursiveCharacterTextSplitter(chunk_size=20000, chunk_overlap=0)
             docs = [Document(page_content=x) for x in text_splitter.split_text(contents)]
             
-            OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', 'YourAPIKey')
-            OPENAI_API_KEY = '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'
+            OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+            if not OPENAI_API_KEY:
+                raise ValueError("OPENAI_API_KEY not found in environment variables")
             llm = ChatOpenAI(model_name="gpt-4-1106-preview", temperature=0, openai_api_key=OPENAI_API_KEY)
             chain = load_qa_chain(llm, chain_type="stuff")
             prompt = """Extract all the test cases (only Title) with the clause number from the above text. 
@@ -85,8 +86,9 @@ def loading_pdf(title):
     else:
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=0)
         texts = text_splitter.split_documents(data)
-        OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', 'YourAPIKey')
-        OPENAI_API_KEY = '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'
+        OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+        if not OPENAI_API_KEY:
+            raise ValueError("OPENAI_API_KEY not found in environment variables")
         embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
         os.environ['PINECONE_API_KEY'] = "f6365a15-09f2-43ce-8826-f4e85a824d5b"
         index_name = "langchain-demo"
@@ -167,8 +169,7 @@ if __name__ == '__main__':
         for heading in headings:
             try:
                 test_name = heading
-                OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', 'YourAPIKey')
-                OPENAI_API_KEY = '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'
+                OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
                 llm = ChatOpenAI(model_name="gpt-4-1106-preview", temperature=0, openai_api_key=OPENAI_API_KEY)
                 chain = load_qa_chain(llm, chain_type="stuff")
                 st.write(test_name)

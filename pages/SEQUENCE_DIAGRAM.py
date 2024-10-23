@@ -15,7 +15,7 @@ import requests
 import io
 import re
 
-client = OpenAI(api_key = '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')  # this is also the default, it can be omitted)
+client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))  # Get API key from environment variable
 
 def generate_sequencediagram():
     

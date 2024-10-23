@@ -14,11 +14,13 @@ from PIL import Image
 import streamlit.components.v1 as components
 
 # Initialize the OpenAI client with your API key
-openai.api_key = "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"
+from dotenv import load_dotenv
+load_dotenv()
 
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
 # client = openai.OpenAI()
-client = OpenAI(api_key='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')  # this is also the default, it can be omitted)
+client = OpenAI()  # This will automatically use the OPENAI_API_KEY from the environment
 
 model = "gpt-4-1106-preview"  # "gpt-3.5-turbo-16k"
 

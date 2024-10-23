@@ -1,37 +1,3 @@
-# from langchain.agents import load_tools
-# from langchain.agents import initialize_agent
-# from langchain.llms import OpenAI
-# from langchain.agents import load_tools
-# from dotenv import load_dotenv
-# import os
-# from langchain.utilities import GoogleSerperAPIWrapper
-# from langchain.agents import AgentType, Tool, initialize_agent
-# from langchain.chat_models import ChatOpenAI
-
-# load_dotenv()
-# OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', 'YourAPIKey')
-# SERPER_API_KEY = os.getenv('SERPER_API_KEY', 'YourAPIKey')
-
-# llm = ChatOpenAI(model_name="gpt-4-1106-preview",temperature=0)
-
-# search = GoogleSerperAPIWrapper()
-# tools = [
-#     Tool(
-#         name="Intermediate Answer",
-#         func=search.run,
-#         description="useful for when you need to ask with search",
-#     )
-# ]
-
-# self_ask_with_search = initialize_agent(
-#     tools, llm, agent='zero-shot-react-description', verbose=True
-# )
-# response = self_ask_with_search.run(
-#     "Generate a full design of experiment matrix in a table for a cookie baking example. Factors = 5, Fractional factorial design, level 2, Resolution is 5. Response should be in a table with all the factors values as column name. Update the table with actual factor values instead of the coded +1 and -1.The actual values are Oven Temperature (°F): 325°F, 375°F, Baking Time (Minutes): 10 min, 15 min, Type of Flour: All-Purpose, Whole Wheat, Amount of Sugar (Cups): 0.75 cups, 1.25 cups, Type of Fat: Butter, Margarine and taste as response 1,10 And return all the 16 runs."
-# )
-# print(response)
-
-
 import os
 from openai import OpenAI
 import streamlit as st
@@ -54,7 +20,18 @@ from zipfile import ZipFile
 import io
 from pymongo import MongoClient
 
-client = OpenAI(api_key='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')  # this is also the default, it can be omitted)
+# Load environment variables from .env file
+load_dotenv()
+
+# Get the OpenAI API key from the environment variable
+openai_api_key = os.getenv("OPENAI_API_KEY")
+
+# Check if the API key was loaded successfully
+if openai_api_key is None:
+    raise ValueError("OpenAI API key not found. Please set it in the .env file.")
+
+# Initialize the OpenAI client with the API key
+client = OpenAI(api_key=openai_api_key)  # Use the API key from the environment
 
 
 
