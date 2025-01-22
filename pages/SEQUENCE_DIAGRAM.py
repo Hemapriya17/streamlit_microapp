@@ -20,7 +20,7 @@ client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))  # Get API key from environ
 def generate_sequencediagram():
     
         # print('vezbezb')
-        name = st.text_input('NAME',' ',placeholder = 'Enter the name for which you would like to generate FMEA table')
+        name = st.text_input('NAME', placeholder='Enter the process to generate Sequence Diagram')
         tmp_button = st.button(label='Submit')
         print(tmp_button,name)
         if tmp_button and name:
@@ -29,7 +29,7 @@ def generate_sequencediagram():
             completion = client.chat.completions.create(model="gpt-4-1106-preview",messages=messages,temperature = 0)
             # print('bezbezb')
             response = completion.choices[0].message.content
-            print(response)
+            # print(response)
             # response1 = response.split('\n',1)
             # print('response1',response1)
             response = response.split('\n',1)[1]

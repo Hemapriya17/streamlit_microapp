@@ -20,7 +20,7 @@ client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 def generate_sequencediagram():
     
         # print('vezbezb')
-        name = st.text_input('NAME',' ',placeholder = 'Enter the name for which you would like to generate FMEA table')
+        name = st.text_input('NAME',placeholder = 'Enter the process to generate Mindmap')
         tmp_button = st.button(label='Submit')
         print(tmp_button,name)
         if tmp_button and name:
@@ -48,13 +48,15 @@ def generate_sequencediagram():
             base64_bytes = base64.b64encode(graphbytes)
             base64_string = base64_bytes.decode("ascii")
 
-            # print(base64_string)
-
-            img = Image.open(io.BytesIO(requests.get('https://mermaid.ink/img/' + base64_string).content))
-            # image = Image.open(img)
-            # new_image = img.resize((700, 1000))
-            # st.image(new_image)
-            st.image(img, caption='Processed Image')
+            # Fetch the image from the URL
+            response = requests.get('https://mermaid.ink/img/' + base64_string)
+            
+            # Check if the response is successful and contains image data
+            if response.status_code == 200 and 'image' in response.headers.get('Content-Type', ''):
+                img = Image.open(io.BytesIO(response.content))
+                st.image(img, caption='Processed Image', use_column_width=True)
+            else:
+                st.error("Failed to retrieve a valid image. Please check the input or try again.")
 
 if __name__ == '__main__':
     generate_sequencediagram()

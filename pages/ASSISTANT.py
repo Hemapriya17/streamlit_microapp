@@ -178,7 +178,7 @@ Remember, a Graph of Thoughts is a dynamic tool, so it should be adaptable as ne
                             </pre>
 
                             <script type="module">
-                                import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+                                import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11.3.0/dist/mermaid.min.js';
                                 mermaid.initialize({{ startOnLoad: true }});
                             </script>
                             """,

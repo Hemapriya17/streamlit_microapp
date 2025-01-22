@@ -1,88 +1,105 @@
 import os
-from openai import OpenAI
 import streamlit as st
 from dotenv import load_dotenv
-load_dotenv()
-import json
-import pandas as pd
-import ast
-import time
-import openai
-import base64
+from openai import OpenAI
 from PIL import Image
-import base64
 import requests
 import io
-import re
-import nltk
-from nltk import word_tokenize, pos_tag
+import base64
+import zlib
+import logging
 
-client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])  # this is also the default, it can be omitted)
+# Set up logging
+logging.basicConfig(level=logging.INFO)
 
-nltk.download('punkt')
-nltk.download('averaged_perceptron_tagger')
+# Load environment variables
+load_dotenv()
 
+# Initialize OpenAI client with API key
+client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+
+def generate_mermaid_diagram(process_name):
+    prompt = f"Generate a simple Mermaid flowchart diagram code for the process '{process_name}'. Use only basic flowchart syntax with rectangles and arrows. Do not include any explanations or markdown code blocks, just the raw Mermaid code."
+    
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4-1106-preview",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant that generates simple Mermaid flowchart diagram code without any markdown formatting."},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=500,
+            n=1,
+            temperature=0
+        )
+        mermaid_code = response.choices[0].message.content.strip()
+        
+        # Remove any markdown code block indicators and 'mermaid' tag if present
+        mermaid_code = mermaid_code.replace('```mermaid', '').replace('```', '').strip()
+        
+        logging.info(f"Generated Mermaid code: {mermaid_code}")
+        return mermaid_code
+    except Exception as e:
+        logging.error(f"An error occurred while generating the Mermaid diagram: {str(e)}")
+        st.error(f"An error occurred while generating the Mermaid diagram: {str(e)}")
+        return None
+
+def get_mermaid_image(mermaid_code):
+    try:
+        # Compress the Mermaid code
+        compressed = zlib.compress(mermaid_code.encode('utf-8'))
+        
+        # Base64 encode the compressed data
+        encoded = base64.urlsafe_b64encode(compressed).decode('ascii')
+        
+        # Create the URL for the Kroki API
+        url = f"https://kroki.io/mermaid/png/{encoded}"
+        
+        logging.info(f"Kroki URL: {url}")
+        
+        # Fetch the image
+        response = requests.get(url)
+        
+        if response.status_code == 200:
+            return Image.open(io.BytesIO(response.content))
+        else:
+            logging.error(f"Failed to fetch the process map image. Status code: {response.status_code}")
+            logging.error(f"Response content: {response.content}")
+            st.error(f"Failed to fetch the process map image. Status code: {response.status_code}")
+            st.error(f"Mermaid code causing the error: {mermaid_code}")
+            return None
+    except Exception as e:
+        logging.error(f"An error occurred while fetching the image: {str(e)}")
+        st.error(f"An error occurred while fetching the image: {str(e)}")
+        return None
 
 def generate_processmap():
+    st.title("Process Map Generator")
     
-        # print('vezbezb')
-        processmap_name = st.text_input('Please mention with both action and object(Eg Cleaning a coffee maker, making coffee using coffee maker). For objects like washing machine please mention it by adding a "-" like washing-machine',' ',placeholder = 'Enter the name for which you would like to generate process map')
-        tmp_button = st.button(label='Submit')
-        print(tmp_button,processmap_name)
-        if tmp_button and processmap_name:
-            words = word_tokenize(processmap_name)
+    processmap_name = st.text_input(
+        'Enter the process (e.g., Cleaning a coffee maker, making coffee using a coffee maker):',
+        placeholder='Enter the process to generate a map'
+    )
 
-    # Perform part-of-speech tagging
-            pos_tags = pos_tag(words)
-
-            # Extract action and object words based on POS tags
-            # st.write(pos_tags)
-            actions = [word for word, pos in pos_tags if pos.startswith('VB')]  # VB stands for verbs
-            objects = [word for word, pos in pos_tags if pos.startswith('NN')]  # NN stands for nouns
-            # st.write(actions,objects)
-            if actions and objects:
-            # action_prompt = f'Return action and object text from {processmap_name} text.return the response as json.Don"t return any unwanted text or assumption.'
-                # messages=[{"role": "user", "content": action_prompt}]
-                # completion = client.chat.completions.create(model="gpt-4-1106-preview",messages=messages,temperature = 0)
-                # # print('bezbezb')
-                # response = completion.choices[0].message.content
-                # print('ggggggg',response)
-                prompt = f'Generate graph map (mermaid code) for {processmap_name} including output for each step . The output should be in between vertical slash and the input should be in between square brackets. The process should be ending with only a input and don"t include yes or no outputs or any questioning outputs or inputs. The graph map should be in sequence. Don"t return any numbers or any unwanted text, description of the response. Don"t return flowchart diagram.'
-
-                #Generate steps involved in {processmap_name} (steps should only be in 2 -3 words)and mention the output for each step in 2-3 words. Return each step in a list and don"t return any numbers or other unwanted texts output string
-                messages=[{"role": "user", "content": prompt}]
-                completion = client.chat.completions.create(model="gpt-4-1106-preview",messages=messages,temperature = 0)
-                # print('bezbezb')
-                response = completion.choices[0].message.content
-                print(response)
-                # response = response.split('\n')
-                # st.write(response)
-                response1 = response.split('\n',1)
-                print('response1',response1)
-                response = response.split('\n',1)[1]
-                print('dict_response',response)
-                graph = response.rsplit('\n',1)[0]
-                graph = graph.replace('/','')
-                # st.write(response)
-                
-                graphbytes = graph.encode("ascii")
-                base64_bytes = base64.b64encode(graphbytes)
-                base64_string = base64_bytes.decode("ascii")
-
-                # print(base64_string)
-                print(requests.get('https://mermaid.ink/img/' + base64_string))
-                img = Image.open(io.BytesIO(requests.get('https://mermaid.ink/img/' + base64_string).content))
-                st.image(img, caption='Processed Image', use_column_width=True)
+    if st.button("Generate Process Map"):
+        if not processmap_name.strip():
+            st.error("Please provide a valid input.")
+            return
+        
+        with st.spinner("Generating process map..."):
+            mermaid_code = generate_mermaid_diagram(processmap_name)
+            
+            if mermaid_code:
+                # st.text("Mermaid code generated successfully. Fetching image...")
+                image = get_mermaid_image(mermaid_code)
+                if image:
+                    # st.subheader("Generated Process Map:")
+                    st.image(image, caption="Process Map", use_column_width=True)
+                else:
+                    st.error("Failed to generate the process map image. Please check the logs for more information.")
             else:
-                if not actions and not objects:
-                    st.write('Please try again with by specifying both action and object')
-                elif not actions:
-                    st.write(f'You have specified only the object {objects}. Please mention some action like cleaning, Building etc. to generate a process map.')
-                elif not objects:
-                    st.write(f'You have specified only the action {actions}. Please mention some objects like coffee maker, washing machine to generate a process map.')
-if __name__ == '__main__':
-    try:
-        generate_processmap()
-    except Exception as e:
-         st.write("please try again")
-         st.stop()
+                st.error("Failed to generate the Mermaid diagram. Please check the logs for more information.")
+
+# Call the function to generate the process map
+if __name__ == "__main__":
+    generate_processmap()

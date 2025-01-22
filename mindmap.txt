@@ -1,29 +1,25 @@
+```mermaid
 @startmindmap
-* Making Coffee
-** Choose Coffee Type
-*** Espresso
-*** Americano
-*** Latte
-*** Cappuccino
-** Select Coffee Beans
-*** Arabica
-*** Robusta
-*** Liberica
-*** Excelsa
-** Grinding Beans
-*** Coarse
-*** Medium
-*** Fine
-*** Extra Fine
-** Boil Water
-** Brewing Method
-*** French Press
-*** Drip Brewer
-*** Espresso Machine
-*** Aeropress
-** Serve
-*** With Sugar
-*** With Milk
-*** Black
-*** With Cream
+* AI Role
+  * Generate Visualizations
+    * Line Plots
+    * Histograms
+    * Scatter Plots
+  * Suggest Visualizations
+    * Based on Data Patterns
+  * Test Procedures Analysis
+* User Interaction
+  * Modify Plots
+    * Drag-and-Drop Fields
+    * Axis Adjustments
+    * Visual Refinements
+  * Scripting Interface
+    * Edit AI-generated Visualizations
+    * Replace Visualizations
+* Key Prompts
+  * "Show me the temperature trend over time for all test runs."
+    * Line Plot
+  * "Overlay a scatter plot of pressure vs. temperature, highlighting anomalies."
+    * Scatter Plot with Anomaly Highlighting
 @endmindmap
+```
