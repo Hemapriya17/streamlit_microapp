@@ -43,7 +43,7 @@ def generate_sequencediagram():
             # print(base64_string)
 
             img = Image.open(io.BytesIO(requests.get('https://mermaid.ink/img/' + base64_string).content))
-            st.image(img, caption='Processed Image', use_column_width=True)
+            st.image(img, caption='Processed Image', use_container_width=True)
 
 if __name__ == '__main__':
     generate_sequencediagram()

@@ -54,7 +54,7 @@ def generate_sequencediagram():
             # Check if the response is successful and contains image data
             if response.status_code == 200 and 'image' in response.headers.get('Content-Type', ''):
                 img = Image.open(io.BytesIO(response.content))
-                st.image(img, caption='Processed Image', use_column_width=True)
+                st.image(img, caption='Processed Image', use_container_width=True)
             else:
                 st.error("Failed to retrieve a valid image. Please check the input or try again.")
 

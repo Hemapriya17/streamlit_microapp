@@ -94,7 +94,7 @@ def generate_processmap():
                 image = get_mermaid_image(mermaid_code)
                 if image:
                     # st.subheader("Generated Process Map:")
-                    st.image(image, caption="Process Map", use_column_width=True)
+                    st.image(image, caption="Process Map", use_container_width=True)
                 else:
                     st.error("Failed to generate the process map image. Please check the logs for more information.")
             else:

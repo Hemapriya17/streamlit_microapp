@@ -22,6 +22,7 @@ import io
 import re
 import os
 import plantuml
+from PIL import UnidentifiedImageError
 
 client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])  # this is also the default, it can be omitted)
 
@@ -59,18 +60,25 @@ def generate_mindmap_name():
             print('response1',response1)
             response = response.split('\n',1)[1]
             print('dict_response',response)
-            graph = response.rsplit('\n',1)[0]
-            # st.write(response)
-            graphbytes = graph.encode("ascii")
+            graph = response.rsplit('\n', 1)[0]  # Extract graph content
+            # Encode the graph content in UTF-8 to handle Unicode characters
+            graphbytes = graph.encode("utf-8")
             base64_bytes = base64.b64encode(graphbytes)
-            base64_string = base64_bytes.decode("ascii")
 
-            # print(base64_string)
-
-            img = Image.open(io.BytesIO(requests.get('https://mermaid.ink/img/' + base64_string).content))
-            st.image(img, caption='Processed Image', use_column_width=True)
-
-            st.markdown(f"```mermaid\n{response}\n```", unsafe_allow_html=True)
+            base64_string = base64_bytes.decode("utf-8")
+            image_url = 'https://mermaid.ink/img/' + base64_string
+            response = requests.get(image_url)
+            
+            # if response.status_code == 200:
+            #     try:
+            #         img = Image.open(io.BytesIO(response.content))
+            #         st.image(img, caption='Processed Image', use_column_width=True)
+            #     except UnidentifiedImageError:
+            #         st.error("The content retrieved is not a valid image.")
+            # else:
+            #     st.error(f"Failed to retrieve image. Status code: {response.status_code}")
+            
+            # st.markdown(f"```mermaid\n{response}\n```", unsafe_allow_html=True)
 
 if __name__ == '__main__':
     generate_mindmap_name()

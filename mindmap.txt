@@ -1,25 +1,38 @@
 ```mermaid
 @startmindmap
-* AI Role
-  * Generate Visualizations
-    * Line Plots
-    * Histograms
-    * Scatter Plots
-  * Suggest Visualizations
-    * Based on Data Patterns
-  * Test Procedures Analysis
-* User Interaction
-  * Modify Plots
-    * Drag-and-Drop Fields
-    * Axis Adjustments
-    * Visual Refinements
-  * Scripting Interface
-    * Edit AI-generated Visualizations
-    * Replace Visualizations
-* Key Prompts
-  * "Show me the temperature trend over time for all test runs."
-    * Line Plot
-  * "Overlay a scatter plot of pressure vs. temperature, highlighting anomalies."
-    * Scatter Plot with Anomaly Highlighting
+* Making Coffee
+  * Select Coffee Type
+    * Espresso
+    * Latte
+    * Cappuccino
+    * Americano
+  * Choose Method
+    * Machine
+      * Automatic
+      * Semi-Automatic
+      * Manual
+    * Non-Machine
+      * French Press
+      * AeroPress
+      * Pour-Over
+      * Cold Brew
+  * Gather Ingredients
+    * Coffee Beans
+    * Water
+    * Milk (for milk-based coffee)
+    * Sugar (optional)
+  * Prepare Coffee
+    * Grind Beans
+    * Heat Water
+    * Brew Coffee
+    * Froth Milk (for milk-based coffee)
+  * Serve
+    * In a Cup
+    * Add-ons
+      * Sugar
+      * Cream
+      * Flavor Syrups
+      * Whipped Cream
+      * Cinnamon or Cocoa Powder
 @endmindmap
 ```
